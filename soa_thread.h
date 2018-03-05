@@ -88,7 +88,7 @@ void mctx_create(mctx_t *mctx,void (*sf_addr)(void *), void *sf_arg,void *sk_add
 
 	/* Step 7 & Step 8: */
 	mctx_switch(&mctx_caller, mctx);
-   printf("14\n");
+   printf("7-8-14\n");
 	
 	/* Step 14: */	
 	return;
@@ -97,6 +97,7 @@ void mctx_create_trampoline(int sig){
    /* Step 5: */
    if (mctx_save(mctx_creat) == 0){
       mctx_called = true;
+      printf("4.5\n");      
       return;
    }
    printf("5\n");
@@ -109,8 +110,7 @@ void mctx_create_boot(void){
 	void (*mctx_start_func)(void *);
 	void *mctx_start_arg;
 	/* Step 10: */
-	sigprocmask(SIG_SETMASK,
-	&mctx_creat_sigs, NULL);
+	sigprocmask(SIG_SETMASK,&mctx_creat_sigs, NULL);
    printf("10\n");   
 	/* Step 11: */
 	mctx_start_func = mctx_creat_func;
@@ -123,6 +123,8 @@ void mctx_create_boot(void){
 
 	/* The thread ‘‘magically’’ starts... */
 	mctx_start_func(mctx_start_arg);
+
+
 	/* NOTREACHED */
 	
 	abort();
