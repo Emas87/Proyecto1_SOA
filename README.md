@@ -12,8 +12,8 @@ Series imputs:
 Grafico:
   Porcentaje de cada Thread
   valor calculado de cada Thread
-  TID activo
   todos los TID
+  mctx_main
   
 Scheduler:
   Modo
