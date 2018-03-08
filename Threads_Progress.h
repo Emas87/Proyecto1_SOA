@@ -8,12 +8,13 @@ typedef struct grap_st{
    int *Porcentaje,*tids;
    double *Resultado;
    mctx_t * mctx_ret;
+   mctx_t * mctx_func;   
 }grap_t;
 
 GtkWidget *window, **progress, *grid, **label;
 int *Porcentaje,*tids;
 double *Resultado;
-mctx_t * mctx_return;
+mctx_t * mctx_return,*mctx_function;
 
 static gboolean update_widgets(gpointer data){
 
@@ -24,6 +25,7 @@ static gboolean update_widgets(gpointer data){
       sprintf(c, "PI = %f", Resultado[i]);
       gtk_label_set_text(GTK_LABEL(label[i]),c);
    }
+   mctx_switch(mctx_function,mctx_return);
    return TRUE;
 }
 void clean_malloc(){
@@ -51,7 +53,7 @@ void Widgets_setup(int* n_tids){
       gtk_grid_attach(GTK_GRID(grid),progress[i],0,i,1,1);
       gtk_grid_attach(GTK_GRID(grid),label[i],1,i,1,1);      
    }
-   gint func_ref = g_timeout_add (100, update_widgets,(gpointer) n_tids );
+   gint func_ref = g_timeout_add (1, update_widgets,(gpointer) n_tids );
 
    gtk_container_add(GTK_CONTAINER(window), grid); 
    gtk_widget_show_all(window);
@@ -67,15 +69,16 @@ void graphics(void* grap_arg){
    Porcentaje = grap_dat -> Porcentaje;
    Resultado = grap_dat -> Resultado;
    mctx_return = grap_dat -> mctx_ret;
+   mctx_function = grap_dat -> mctx_func;
+
    int n_tids_tmp = 0;
    int *n_tids = &n_tids_tmp;   
    while(tids[*n_tids]){
          (*n_tids)++;
    }
    Widgets_setup(n_tids);
-   mctx_restore(mctx_return);
-
-   
+   //mctx_restore(mctx_return);
+   exit(0);   
 }
 /*int main(int argc, char* argv[])
 {
