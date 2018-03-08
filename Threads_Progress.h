@@ -73,7 +73,7 @@ void graphics(void* grap_arg){
          (*n_tids)++;
    }
    Widgets_setup(n_tids);
-   mctx_restore(grap_dat -> mctx_ret);
+   mctx_restore(mctx_return);
 
    
 }
