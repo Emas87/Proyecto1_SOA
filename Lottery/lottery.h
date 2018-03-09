@@ -3,7 +3,7 @@
 
 void initrand() {
 	srand(time(NULL));
-	sleep(1);
+//	sleep(1);
 }
 
 int lottery(int thread_num, int thread_tickets[], int thread_id[]){
