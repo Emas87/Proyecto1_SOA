@@ -6,7 +6,7 @@ void initrand() {
 	sleep(1);
 }
 
-int lottery(int thread_num, int thread_tickets[]){
+int lottery(int thread_num, int thread_tickets[], int thread_id[]){
 	
 	initrand();
 
@@ -29,7 +29,7 @@ int lottery(int thread_num, int thread_tickets[]){
 		acum += thread_tickets[j];
 		//printf("Acum: %d\n", acum);
 		if(acum >= winner_ticket){
-			winner_thread = j;
+			winner_thread = thread_id[j];
 			//printf("Winner thread: %d\n", winner_thread);
 			return winner_thread;
 		}
