@@ -32,7 +32,9 @@ int main(int argc,char *argv[]){
 	int tickets[] = {20,10,5,30,10};
 	char mode[] = "No Expropiativo";
 	int quantum = 15;
-	int winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
+	int winner_thread=0;
+	//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
+	winner_thread = lottery(thread_num, tickets, thread_id);
 	printf("Winner Thread: %d\n",winner_thread);
 
 	size_t sk_size = SIGSTKSZ;
