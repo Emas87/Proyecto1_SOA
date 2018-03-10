@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-void hello(void* mctx_return_arg){
+/*void hello(void* mctx_return_arg){
    mctx_t * mctx_return =  (mctx_t*)mctx_return_arg;
    printf("Hello Wolrd \n");
    mctx_restore(mctx_return);
@@ -23,7 +23,7 @@ int scheduler(char *mode, int thread_num, int tickets[], int quantum, int thread
 	} 
 	return winner_thread;
 
-}
+}*/
 
 
 int main(int argc,char *argv[]){
