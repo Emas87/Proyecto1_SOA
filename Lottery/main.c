@@ -34,28 +34,21 @@ int main(int argc,char *argv[]){
 	char mode[] = "No Expropiativo";
 	int quantum = 15;
 	int winner_thread=0;
+	int i;
+	int indice;
 
-	//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
-	winner_thread = lottery(thread_num, tickets, thread_id);
-	printf("Winner Thread: %d\n",winner_thread);
 
 	size_t sk_size = SIGSTKSZ;
 	char sk_addr[thread_num][SIGSTKSZ];
 	mctx_t mctx_create_thread[thread_num], mctx_main;
 	mctx_t *sf_arg = &mctx_main;
 
-	int i;
-	int indice;
-	for(i=0;i<thread_num;i++){
-		if(thread_id[i]==winner_thread){
-			indice = i;
-		}
-	}
 
 	int workload=100;
-	double percent_halt=50.0;
+	double percent_halt=10;
 	double percent_done=0.0;
 	double pi=0.0;
+	int item=0;
 
 	arctan_t arctan_arg;
 	arctan_t *arctan_args = &arctan_arg; 
@@ -64,27 +57,41 @@ int main(int argc,char *argv[]){
 	arctan_args -> percent_halt = &percent_halt;
 	arctan_args -> percent_done = &percent_done;
 	arctan_args -> pi = &pi;
+	arctan_args -> item = &item;
 	arctan_args -> mctx_ret = & mctx_main;
 	arctan_args -> mctx_func = & mctx_create_thread[thread_num];
+
+	initrand();
+
+	while(percent_done <100){
+
+	//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
+	winner_thread = lottery(thread_num, tickets, thread_id);
+	printf("Winner Thread: %d\n",winner_thread);
+
+	for(i=0;i<thread_num;i++){
+		if(thread_id[i]==winner_thread){
+			indice = i;
+		}
+	}
+	printf("Indice: %d\n", indice);
 
 	for(i=0;i<thread_num;i++){
 		mctx_t mctx_create_thread[i];
 		mctx_t *mctx_p = &mctx_create_thread[i];
 
-
 		//mctx_t *mctx_p = &mctx_create_thread;
 		mctx_create(mctx_p, arctan, (void*)arctan_args, (void*)sk_addr[i], sk_size);
 		if(i==indice){
 			mctx_switch(&mctx_main, &mctx_create_thread[indice]);
-			mctx_switch(&mctx_main, &mctx_create_thread[indice]);
 		}
 	}
-
-
-	printf("Indice: %d\n", indice);
+	
+	printf ("Porcentaje Final: %f\n", percent_done);
 	//mctx_switch(&mctx_main, &mctx_create_thread[indice]);
-	printf("Fin desde\n");
 
+	}
 
+	printf("Fin Programa \n");
 
 }

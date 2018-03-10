@@ -3,12 +3,9 @@
 
 void initrand() {
 	srand(time(NULL));
-//	sleep(1);
 }
 
 int lottery(int thread_num, int thread_tickets[], int thread_id[]){
-	
-	initrand();
 
 	int acum=0;
 	int i,j;
