@@ -29,8 +29,8 @@ int scheduler(char *mode, int thread_num, int tickets[], int quantum, int thread
 int main(int argc,char *argv[]){
 
 	int thread_num = 7;
-	int thread_id[] = {0,0,123,215,349,498,545}; 
-	int tickets[] = {0,0,25,25,25,25,25};
+	int thread_id[] = {7,14,28,56,112,224,448}; 
+	int tickets[] = {13,11,15,9,17,7,19};
 	char mode[] = "No Expropiativo";
 	int quantum = 15;
 	int winner_thread=0;
@@ -45,33 +45,35 @@ int main(int argc,char *argv[]){
 	mctx_t *sf_arg = &mctx_main;
 
 
-	int workload[]={0,0,16,32,64,128,256};
-	double percent_halt[]={0,0,10,15,20,25,30};
+	int workload[]={4,8,16,32,64,128,256};
+	double percent_halt[]={10,15,20,25,30,35,40};
 	double percent_done[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 	double pi[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 	int item[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 
 	initrand();
 
-	for(j=2;j<thread_num;j++){
+	arctan_t arctan_arg[thread_num];
+	//mctx_t mctx_create_thread[thread_num];
+	
+	for(j=0;j<thread_num;j++){
 		while(percent_done[j] <100){
 		printf("-------------------------------------------------------------\n");
 		//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
 		winner_thread = lottery(thread_num, tickets, thread_id);
 		printf("Winner Thread: %d\n",winner_thread);
 
-		for(i=2;i<thread_num;i++){
+		for(i=0;i<thread_num;i++){
 			if(thread_id[i]==winner_thread){
 				indice = i;
 			}
 		}
 		printf("Indice: %d\n", indice);
 
-		for(i=2;i<thread_num;i++){
+		for(i=0;i<thread_num;i++){
 
 			if(i==indice){
 
-			arctan_t arctan_arg[i];
 			arctan_t *arctan_args = &arctan_arg[i]; 
 
 			arctan_args -> workload = &workload[i];
@@ -82,7 +84,6 @@ int main(int argc,char *argv[]){
 			arctan_args -> mctx_ret = & mctx_main;
 			arctan_args -> mctx_func = & mctx_create_thread[i];
 
-			mctx_t mctx_create_thread[i];
 			mctx_t *mctx_p = &mctx_create_thread[i];
 
 			//mctx_t *mctx_p = &mctx_create_thread;
@@ -92,7 +93,7 @@ int main(int argc,char *argv[]){
 			}
 		}
 	
-		printf ("Porcentaje Final: %f Thread %d\n", percent_done[indice], indice-2);
+		printf ("Porcentaje Final: %f Thread %d\n", percent_done[indice], indice);
 		//mctx_switch(&mctx_main, &mctx_create_thread[indice]);
 
 		}
