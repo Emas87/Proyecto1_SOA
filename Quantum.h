@@ -12,11 +12,15 @@ struct timeval {
 };*/
 
 mctx_t *mctx_main;
-void
-quantum_handler (int sig)
+struct itimerval *interval_new ;
+struct itimerval interval_new_var;
+
+
+void quantum_handler (int sig)
 {
   //signal (sig, catch_alarm);
    printf("termino el quantum\n");
+   setitimer (ITIMER_REAL,interval_new,NULL );
    mctx_restore(mctx_main);
 }
 void set_quantum(int quantum,mctx_t *mctx_q_arg){
@@ -25,8 +29,6 @@ void set_quantum(int quantum,mctx_t *mctx_q_arg){
    zero_time.tv_sec = 0;
    zero_time.tv_usec = 0;
    new_time.tv_usec = quantum;
-   struct itimerval *interval_new ;
-   struct itimerval interval_new_var;
    interval_new = &interval_new_var;  
 
    interval_new->it_interval = zero_time;
