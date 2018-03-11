@@ -4,6 +4,9 @@
 void hello(void* mctx_return_arg){
    mctx_t * mctx_return =  (mctx_t*)mctx_return_arg;
    printf("Hello Wolrd \n");
+   while(1){
+      //printf("while \n");   
+   }
    mctx_restore(mctx_return);
 }
 
@@ -12,6 +15,7 @@ int main(int argc,char *argv[]){
    int Porcentaje_temp[5] = {26,56,89,99,'\0'};
    double Resultado_temp[5] = {3.1,3.14,3.141,3.1416,'\0'};
    int tids_tmp[5] = {6,1,3,5,'\0'};
+   int quantum = 100*1000;
    mctx_t mctx_create_thread[4],mctx_main;
 
 
@@ -27,29 +31,33 @@ int main(int argc,char *argv[]){
    grap_args -> tids = tids_tmp;
    grap_args -> mctx_ret = & mctx_main;
    grap_args -> mctx_func = & mctx_create_thread[2];
+   grap_args -> quantum = quantum;
+
 
    hello_args -> mctx_ret = & mctx_main;
    hello_args -> mctx_func = & mctx_create_thread[3];
 
    size_t sk_size = SIGSTKSZ;
-   char sk_addr[2][SIGSTKSZ];
-   //mctx_create(mctx_p2,hello, (void*)hello_args,(void*)sk_addr[3], sk_size);      
+   char sk_addr[4][SIGSTKSZ];
+   mctx_create(mctx_p2,hello, (void*)hello_args,(void*)sk_addr[3], sk_size);
    mctx_create(mctx_p,graphics, (void*)grap_args,(void*)sk_addr[2], sk_size);
-   mctx_t *mctx_pmain = &mctx_main;   
-   mctx_switch(mctx_pmain,&mctx_create_thread[2]);
+
    
-   /*int turno = 0;
-   set_quantum(100,mctx_pmain);
+   mctx_t *mctx_pmain = &mctx_main;   
+   //mctx_switch(mctx_pmain,mctx_p);
+   
+   int turno = 0;
+   set_quantum(quantum,mctx_pmain);
    while(1){
       if(turno==0){
-         printf("turno 0\n");
-         mctx_switch(mctx_pmain,&mctx_create_thread[2]);
+         mctx_switch(mctx_pmain,mctx_p);
+         printf("turno 0\n");         
          turno=1;
       } else {
-         printf("turno 1\n");
-         mctx_switch(mctx_pmain,&mctx_create_thread[3]);
+         //mctx_switch(mctx_pmain,mctx_p2);
+         printf("turno 1\n");         
          turno=0;
       }
-   }*/
+   }
    return 0;
 }

@@ -25,7 +25,10 @@ static gboolean update_widgets(gpointer data){
       sprintf(c, "PI = %f", Resultado[i]);
       gtk_label_set_text(GTK_LABEL(label[i]),c);
    }
-   //mctx_switch(mctx_function,mctx_return);
+   printf("salvando update\n");   
+   
+   mctx_switch(mctx_function,mctx_return);
+   printf("saliendo del update\n");   
    return TRUE;
 }
 void clean_malloc(){
@@ -37,6 +40,7 @@ void Widgets_setup(int* n_tids,int quantum){
    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit), NULL);
    
+
    //Crear array de progress bars y labels
    grid = gtk_grid_new();
    progress = malloc((*n_tids) * sizeof(GtkWidget));
@@ -57,8 +61,8 @@ void Widgets_setup(int* n_tids,int quantum){
 
    gtk_container_add(GTK_CONTAINER(window), grid); 
    gtk_widget_show_all(window);
-   printf("graficos\n");   
-   gint func_ref = g_timeout_add (quantum, update_widgets,(gpointer) n_tids );   
+   gint func_ref = g_timeout_add ((quantum/10000), update_widgets,(gpointer) n_tids );   
+   printf("graficos\n");      
    gtk_main();
    g_source_remove (func_ref);
    clean_malloc();
@@ -74,11 +78,11 @@ void graphics(void* grap_arg){
    mctx_function = grap_dat -> mctx_func;
    int quantum = grap_dat -> quantum;
    int n_tids_tmp = 0;
-   int *n_tids = &n_tids_tmp;   
+   int *n_tids = &n_tids_tmp;
+ 
    while(tids[*n_tids]){
          (*n_tids)++;
    }
-   
    Widgets_setup(n_tids,quantum);
    //mctx_restore(mctx_return);
    exit(0);   
