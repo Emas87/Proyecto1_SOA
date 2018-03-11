@@ -1,11 +1,11 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
-#include "soa_thread.h"
+#include "Quantum.h"
 
 //gcc Threads_Progress.c `pkg-config --cflags --libs gtk+-3.0`
 
 typedef struct grap_st{
-   int *Porcentaje,*tids;
+   int *Porcentaje,*tids,quantum;
    double *Resultado;
    mctx_t * mctx_ret;
    mctx_t * mctx_func;   
@@ -25,14 +25,14 @@ static gboolean update_widgets(gpointer data){
       sprintf(c, "PI = %f", Resultado[i]);
       gtk_label_set_text(GTK_LABEL(label[i]),c);
    }
-   mctx_switch(mctx_function,mctx_return);
+   //mctx_switch(mctx_function,mctx_return);
    return TRUE;
 }
 void clean_malloc(){
    free(progress);
    free(label);
 }
-void Widgets_setup(int* n_tids){
+void Widgets_setup(int* n_tids,int quantum){
    
    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit), NULL);
@@ -41,6 +41,7 @@ void Widgets_setup(int* n_tids){
    grid = gtk_grid_new();
    progress = malloc((*n_tids) * sizeof(GtkWidget));
    label = malloc((*n_tids) * sizeof(GtkWidget));
+   
    for(int i = 0;i<*n_tids;i++){
       GtkWidget *progress_tmp, *label_tmp;
       progress_tmp = gtk_progress_bar_new();
@@ -53,10 +54,11 @@ void Widgets_setup(int* n_tids){
       gtk_grid_attach(GTK_GRID(grid),progress[i],0,i,1,1);
       gtk_grid_attach(GTK_GRID(grid),label[i],1,i,1,1);      
    }
-   gint func_ref = g_timeout_add (1, update_widgets,(gpointer) n_tids );
 
    gtk_container_add(GTK_CONTAINER(window), grid); 
    gtk_widget_show_all(window);
+   printf("graficos\n");   
+   gint func_ref = g_timeout_add (quantum, update_widgets,(gpointer) n_tids );   
    gtk_main();
    g_source_remove (func_ref);
    clean_malloc();
@@ -70,13 +72,14 @@ void graphics(void* grap_arg){
    Resultado = grap_dat -> Resultado;
    mctx_return = grap_dat -> mctx_ret;
    mctx_function = grap_dat -> mctx_func;
-
+   int quantum = grap_dat -> quantum;
    int n_tids_tmp = 0;
    int *n_tids = &n_tids_tmp;   
    while(tids[*n_tids]){
          (*n_tids)++;
    }
-   Widgets_setup(n_tids);
+   
+   Widgets_setup(n_tids,quantum);
    //mctx_restore(mctx_return);
    exit(0);   
 }
