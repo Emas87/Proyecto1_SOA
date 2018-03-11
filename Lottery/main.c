@@ -53,21 +53,21 @@ int main(int argc,char *argv[]){
 
 	initrand();
 
-	for(j=0;j<thread_num;j++){
+	for(j=2;j<thread_num;j++){
 		while(percent_done[j] <100){
 		printf("-------------------------------------------------------------\n");
 		//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
 		winner_thread = lottery(thread_num, tickets, thread_id);
 		printf("Winner Thread: %d\n",winner_thread);
 
-		for(i=0;i<thread_num;i++){
+		for(i=2;i<thread_num;i++){
 			if(thread_id[i]==winner_thread){
 				indice = i;
 			}
 		}
 		printf("Indice: %d\n", indice);
 
-		for(i=0;i<thread_num;i++){
+		for(i=2;i<thread_num;i++){
 
 			if(i==indice){
 
