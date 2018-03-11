@@ -75,7 +75,7 @@ void mctx_create(mctx_t *mctx,void (*sf_addr)(void *), void *sf_arg,void *sk_add
 	while (!mctx_called)
 	   sigsuspend(&sigs); //Enmascara todas las senales que contiene "sig", o sea todas menos SIGUSR1
 
-   printf("4\n");
+   //printf("4\n");
 	/* Step 6: */
 	sigaltstack(NULL, &ss);
 	ss.ss_flags = SS_DISABLE;

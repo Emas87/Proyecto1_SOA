@@ -8,11 +8,12 @@ typedef struct grap_st{
    int *Porcentaje,*tids,quantum;
    double *Resultado;
    mctx_t * mctx_ret;
-   mctx_t * mctx_func;   
+   mctx_t * mctx_func;
+   int modo;
 }grap_t;
 
 GtkWidget *window, **progress, *grid, **label;
-int *Porcentaje,*tids;
+int *Porcentaje,*tids,modo;
 double *Resultado;
 mctx_t * mctx_return,*mctx_function;
 
@@ -25,10 +26,11 @@ static gboolean update_widgets(gpointer data){
       sprintf(c, "PI = %f", Resultado[i]);
       gtk_label_set_text(GTK_LABEL(label[i]),c);
    }
-   printf("salvando update\n");   
-   
-   mctx_switch(mctx_function,mctx_return);
-   printf("saliendo del update\n");   
+   //printf("salvando update\n");   
+   if(!modo){
+       mctx_switch(mctx_function,mctx_return);
+   }
+   //printf("saliendo del update\n");   
    return TRUE;
 }
 void clean_malloc(){
@@ -61,7 +63,7 @@ void Widgets_setup(int* n_tids,int quantum){
 
    gtk_container_add(GTK_CONTAINER(window), grid); 
    gtk_widget_show_all(window);
-   gint func_ref = g_timeout_add ((quantum/10000), update_widgets,(gpointer) n_tids );   
+   gint func_ref = g_timeout_add (quantum/1000, update_widgets,(gpointer) n_tids );   
    printf("graficos\n");      
    gtk_main();
    g_source_remove (func_ref);
@@ -83,6 +85,7 @@ void graphics(void* grap_arg){
    while(tids[*n_tids]){
          (*n_tids)++;
    }
+
    Widgets_setup(n_tids,quantum);
    //mctx_restore(mctx_return);
    exit(0);   
