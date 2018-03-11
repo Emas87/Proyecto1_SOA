@@ -80,9 +80,10 @@ int main(int argc,char *argv[]){
 					mctx_t *mctx_p = &mctx_create_thread[i];
 		
 					//mctx_t *mctx_p = &mctx_create_thread;
-					if(percent_done[i]==0){
-						mctx_create(mctx_p, arctan, (void*)arctan_args, (void*)sk_addr[i], sk_size);
-					}
+					//if(percent_done[i]==0){
+					mctx_create(mctx_p, arctan, (void*)arctan_args, (void*)sk_addr[i], sk_size);
+					//}
+					//printf("ADDRESS: %d\n",sk_addr[i]);
 					mctx_switch(&mctx_main, &mctx_create_thread[i]);
 					break;         
 				}
