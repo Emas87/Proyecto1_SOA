@@ -28,14 +28,15 @@ int scheduler(char *mode, int thread_num, int tickets[], int quantum, int thread
 
 int main(int argc,char *argv[]){
 
-	int thread_num = 5;
-	int thread_id[] = {123,215,349,498,545}; 
-	int tickets[] = {20,10,5,30,10};
+	int thread_num = 7;
+	int thread_id[] = {0,0,123,215,349,498,545}; 
+	int tickets[] = {0,0,25,25,25,25,25};
 	char mode[] = "No Expropiativo";
 	int quantum = 15;
 	int winner_thread=0;
-	int i;
-	int indice;
+	int i=0;
+	int j=0;
+	int indice=0;
 
 
 	size_t sk_size = SIGSTKSZ;
@@ -44,52 +45,57 @@ int main(int argc,char *argv[]){
 	mctx_t *sf_arg = &mctx_main;
 
 
-	int workload=100;
-	double percent_halt=10;
-	double percent_done=0.0;
-	double pi=0.0;
-	int item=0;
-
-	arctan_t arctan_arg;
-	arctan_t *arctan_args = &arctan_arg; 
-
-	arctan_args -> workload = &workload;
-	arctan_args -> percent_halt = &percent_halt;
-	arctan_args -> percent_done = &percent_done;
-	arctan_args -> pi = &pi;
-	arctan_args -> item = &item;
-	arctan_args -> mctx_ret = & mctx_main;
-	arctan_args -> mctx_func = & mctx_create_thread[thread_num];
+	int workload[]={0,0,16,32,64,128,256};
+	double percent_halt[]={0,0,10,15,20,25,30};
+	double percent_done[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+	double pi[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+	int item[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 
 	initrand();
 
-	while(percent_done <100){
+	for(j=0;j<thread_num;j++){
+		while(percent_done[j] <100){
+		printf("-------------------------------------------------------------\n");
+		//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
+		winner_thread = lottery(thread_num, tickets, thread_id);
+		printf("Winner Thread: %d\n",winner_thread);
 
-	//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
-	winner_thread = lottery(thread_num, tickets, thread_id);
-	printf("Winner Thread: %d\n",winner_thread);
-
-	for(i=0;i<thread_num;i++){
-		if(thread_id[i]==winner_thread){
-			indice = i;
+		for(i=0;i<thread_num;i++){
+			if(thread_id[i]==winner_thread){
+				indice = i;
+			}
 		}
-	}
-	printf("Indice: %d\n", indice);
+		printf("Indice: %d\n", indice);
 
-	for(i=0;i<thread_num;i++){
-		mctx_t mctx_create_thread[i];
-		mctx_t *mctx_p = &mctx_create_thread[i];
+		for(i=0;i<thread_num;i++){
 
-		//mctx_t *mctx_p = &mctx_create_thread;
-		mctx_create(mctx_p, arctan, (void*)arctan_args, (void*)sk_addr[i], sk_size);
-		if(i==indice){
-			mctx_switch(&mctx_main, &mctx_create_thread[indice]);
+			if(i==indice){
+
+			arctan_t arctan_arg[i];
+			arctan_t *arctan_args = &arctan_arg[i]; 
+
+			arctan_args -> workload = &workload[i];
+			arctan_args -> percent_halt = &percent_halt[i];
+			arctan_args -> percent_done = &percent_done[i];
+			arctan_args -> pi = &pi[i];
+			arctan_args -> item = &item[i];
+			arctan_args -> mctx_ret = & mctx_main;
+			arctan_args -> mctx_func = & mctx_create_thread[i];
+
+			mctx_t mctx_create_thread[i];
+			mctx_t *mctx_p = &mctx_create_thread[i];
+
+			//mctx_t *mctx_p = &mctx_create_thread;
+			mctx_create(mctx_p, arctan, (void*)arctan_args, (void*)sk_addr[i], sk_size);
+			mctx_switch(&mctx_main, &mctx_create_thread[i]);
+
+			}
 		}
-	}
 	
-	printf ("Porcentaje Final: %f\n", percent_done);
-	//mctx_switch(&mctx_main, &mctx_create_thread[indice]);
+		printf ("Porcentaje Final: %f Thread %d\n", percent_done[indice], indice-2);
+		//mctx_switch(&mctx_main, &mctx_create_thread[indice]);
 
+		}
 	}
 
 	printf("Fin Programa \n");
