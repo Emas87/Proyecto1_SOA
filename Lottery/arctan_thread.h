@@ -65,8 +65,11 @@ double percent_done_local=0.0;
 		*percent_done += percent_done_local;
 		*item += n;
         	printf("Workload percent done=%f\n",*percent_done);
-        	printf("Partial Pi result=%f\n",*pi);
+        	printf("Partial Pi result=%.10lf\n",*pi);
         	mctx_switch(mctx_function,mctx_return);
+		printf("DEBUG\n");
+		printf("Porcentaje entrada=%f\n",*percent_done);
+
 		halt_flag=0;
 	}
 	arctan_result=arctan_result + pow((double)-1.0, (double) (n+*item)) / (2.0*(double)(n+*item)+1.0);
@@ -82,7 +85,7 @@ double percent_done_local=0.0;
         *pi+=4.0 * arctan_result;
 	*percent_done += percent_done_local;
 	printf("Workload percent done=%f\n",*percent_done);
-        printf("Final Pi result=%f\n",*pi);
+        printf("Final Pi result=%.10lf\n",*pi);
 //	return(pi,percent_done);
 	mctx_switch(mctx_function,mctx_return);
 }
