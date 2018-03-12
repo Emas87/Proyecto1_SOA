@@ -15,10 +15,11 @@ typedef struct arctan_st{
         int *workload, *item,*percent_halt,*percent_done;
         double *pi;
         mctx_t * mctx_ret;
-        mctx_t * mctx_func;   
+        mctx_t * mctx_func;
+        int modo;
 }arctan_t;
 
-int *workload, *item,*percent_halt,*percent_done;
+int *workload, *item,*percent_halt,*percent_done,modo;
 double *pi;
 mctx_t * mctx_return;
 mctx_t * mctx_function;   
@@ -32,7 +33,7 @@ void arctan (void* arctan_arg) {
 	item = arctan_dat -> item;
 	mctx_return = arctan_dat -> mctx_ret;
 	mctx_function = arctan_dat -> mctx_func;
-
+   modo = arctan_dat -> modo;
 	int n=0;
 	int halt_flag=0;
 	int iterations=*workload*50;
@@ -42,36 +43,42 @@ void arctan (void* arctan_arg) {
 	//printf("Workload=%i\n", *workload);
 	//printf("Starting pi value calculation\n");
 	
-	printf("Porcentaje Inicial=%d%% \n",*percent_done);
+	printf("Porcentaje Inicial=%d%%\n",*percent_done);
 	//printf("Item entrada=%d\n",*item);
 
 	for (n=0; n<iterations; n++) {
 		if ((percent_done_local+*percent_done) <100){
-			if (halt_flag==1) {
+			if (halt_flag==1 && modo == 0) {
 				*pi+=4.0 * arctan_result;
 				*percent_done += percent_done_local;
 				*item += n;
 		        	//printf("Workload percent done=%d\n",*percent_done);
-		        	printf("Resultado Parcial: PI=%.10lf\n",*pi);
+		      printf("Resultado Parcial: PI=%.10lf\n",*pi);
 		        	mctx_switch(mctx_function,mctx_return);
 				halt_flag=0;
 			}
 			arctan_result=arctan_result + pow((double)-1.0, (double) (n+*item)) / (2.0*(double)(n+*item)+1.0);
+         if(modo){
+            *pi+=4.0 * arctan_result;
+            *percent_done += percent_done_local;
+				*item += n;            
+		      //printf("Resultado Parcial: PI=%.10lf\n",*pi);
+         }
 			//printf("Iteration %i value %f\n",n+*item,4*arctan_result+*pi);
 			percent_done_local = ((double)(n+1)/(double)iterations)*100.0;
 			//printf("Workload percent done=%f\n",*percent_done);
-			if (percent_done_local == *percent_halt) {
+			if (percent_done_local == *percent_halt && modo == 0) {
 				halt_flag=1;
 				//printf("Halt flag set\n");
 			}
 		}
 	}
-
-        *pi+=4.0 * arctan_result;
-	*percent_done += percent_done_local;
+   if(!modo){
+      *pi+=4.0 * arctan_result;
+	   *percent_done += percent_done_local;
+   }
 	//printf("Workload percent done=%d\n",*percent_done);
-        printf("Resultado Final: PI=%.10lf\n",*pi);
-//	return(pi,percent_done);
+   printf("Resultado Final: PI=%.10lf\n",*pi);
 	mctx_switch(mctx_function,mctx_return);
 
 }
