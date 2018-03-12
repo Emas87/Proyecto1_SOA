@@ -1,7 +1,4 @@
-#include "lottery.h"
-#include "arctan_thread.h"
 #include "Threads_Progress.h"
-#include <stdio.h>
 
 
 /*void hello(void* mctx_return_arg){
@@ -28,7 +25,7 @@ int scheduler(char *mode, int thread_num, int tickets[], int quantum, int thread
 
 
 int main(int argc,char *argv[]){
-
+   gtk_init(&argc, &argv);   
 	int thread_num = 7;
 	int thread_id[] = {7,14,28,56,112,224,448,'\0'}; 
 	int tickets[] = {13,11,15,9,17,7,19,'\0'};
@@ -45,21 +42,21 @@ int main(int argc,char *argv[]){
 	mctx_t mctx_create_thread[thread_num], mctx_main;
 	mctx_t *sf_arg = &mctx_main;
 
-	int workload[]={4,8,16,32,64,128,256,'\0'};
-	double percent_halt[]={10,15,20,25,30,35,40,'\0'};
-	double percent_done[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0,'\0'};
+	int workload[]={0,8,16,32,64,128,256,'\0'};
+	int percent_halt[]={0,15,20,25,30,35,40,'\0'};
+	int percent_done[]={0,0,0,0,0,0,0,'\0'};
 	double pi[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0,'\0'};
 	int item[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0,'\0'};
 
 	initrand();
 
 	arctan_t arctan_arg[thread_num];
+   grap_t grap_arg;
+   int inicio = 0;
 	//mctx_t mctx_create_thread[thread_num];
 
 	if(modo == 0){
-	
-	for(j=1;j<thread_num;j++){
-		while(percent_done[j] <100){
+		while(1){
 			printf("-------------------------------------------------------------\n");
 			//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
 			winner_thread = lottery(thread_num, tickets, thread_id);
@@ -70,22 +67,22 @@ int main(int argc,char *argv[]){
 					indice = i;
 					if(indice == 0){
 						printf("Graficos\n");
-						grap_t grap_arg;
-						for(k=1;k<thread_num;k++){
-							grap_t *grap_args = &grap_arg[k];
-							grap_args -> Porcentaje = &percent_done[k];
-							grap_args -> Resultado = &pi[k];
-							grap_args -> tids = thread_id[k];
-							grap_args -> mctx_ret = &mctx_main;
-							grap_args -> mctx_func = &mctx_create_thread[0];
-							//grap_args -> quantum = quantum;
-							grap_args -> modo = modo;
+						grap_t *grap_args = &grap_arg;
+						grap_args -> Porcentaje = percent_done;
+						grap_args -> Resultado = pi;
+						grap_args -> tids = thread_id;
+						grap_args -> mctx_ret = &mctx_main;
+						grap_args -> mctx_func = &mctx_create_thread[0];
+                  grap_args -> quantum = 100000;
+						grap_args -> modo = modo;
 
-							mctx_t *mctx_p = &mctx_create_thread[0];
-							mctx_create(mctx_p, graphics, (void*)grap_args, (void*)sk_addr[0], sk_size);
-							mctx_switch(&mctx_main, &mctx_create_thread[0]);
-							
+						mctx_t *mctx_p = &mctx_create_thread[0];
+						if(!inicio){
+                     mctx_create(mctx_p, graphics, (void*)grap_args, (void*)sk_addr[0], sk_size);
+                     inicio = 1;
 						}
+                  mctx_switch(&mctx_main, &mctx_create_thread[0]);
+                  break;						
 
 					} else {
 						printf("Indice: %d\n", indice);
@@ -112,18 +109,15 @@ int main(int argc,char *argv[]){
 				}
 			}
 	
-			printf ("Porcentaje Parcial: %f Thread %d\n", percent_done[indice], indice);
+			printf ("Porcentaje Parcial: %d%% Thread %d\n", percent_done[indice], indice);
 			//mctx_switch(&mctx_main, &mctx_create_thread[indice]);
 
 			if(percent_done[indice]==100){
 				tickets[indice]=0;
 			}
-
+         
 		}
-	}
-	
 	} //end if modo
-
 	printf("Fin Programa \n");
 
 }

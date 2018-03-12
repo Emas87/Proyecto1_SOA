@@ -1,7 +1,6 @@
-#include "soa_thread.h"
-#include <signal.h>
 #include <sys/time.h>
-#include <ucontext.h>
+#include "arctan_thread.h"
+
 
 /*struct itimerval {
     struct timeval it_interval; // next value 

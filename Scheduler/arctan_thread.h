@@ -12,14 +12,14 @@
 /* Procedure to calculate 4arctan(1)=pi */
 
 typedef struct arctan_st{
-        int *workload, *item;
-        double *percent_halt,*pi,*percent_done;
+        int *workload, *item,*percent_halt,*percent_done;
+        double *pi;
         mctx_t * mctx_ret;
         mctx_t * mctx_func;   
 }arctan_t;
 
-int *workload, *item;
-double *percent_halt,*pi,*percent_done;
+int *workload, *item,*percent_halt,*percent_done;
+double *pi;
 mctx_t * mctx_return;
 mctx_t * mctx_function;   
 
@@ -37,12 +37,12 @@ void arctan (void* arctan_arg) {
 	int halt_flag=0;
 	int iterations=*workload*50;
 	double arctan_result=0.0;
-	double percent_done_local=0.0;
+	int percent_done_local=0;
 
 	printf("Input workload=%i\n", *workload);
 	printf("Starting pi value calculation\n");
 	
-	printf("Porcentaje entrada=%f\n",*percent_done);
+	printf("Porcentaje entrada=%d\n",*percent_done);
 	printf("Item entrada=%d\n",*item);
 
 	for (n=0; n<iterations; n++) {
@@ -51,11 +51,11 @@ void arctan (void* arctan_arg) {
 				*pi+=4.0 * arctan_result;
 				*percent_done += percent_done_local;
 				*item += n;
-		        	printf("Workload percent done=%f\n",*percent_done);
+		        	printf("Workload percent done=%d\n",*percent_done);
 		        	printf("Partial Pi result=%.10lf\n",*pi);
 		        	mctx_switch(mctx_function,mctx_return);
 				printf("DEBUG\n");
-				printf("Porcentaje entrada=%f\n",*percent_done);
+				printf("Porcentaje entrada=%d\n",*percent_done);
 
 				halt_flag=0;
 			}
@@ -72,7 +72,7 @@ void arctan (void* arctan_arg) {
 
         *pi+=4.0 * arctan_result;
 	*percent_done += percent_done_local;
-	printf("Workload percent done=%f\n",*percent_done);
+	printf("Workload percent done=%d\n",*percent_done);
         printf("Final Pi result=%.10lf\n",*pi);
 //	return(pi,percent_done);
 	mctx_switch(mctx_function,mctx_return);

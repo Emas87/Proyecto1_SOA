@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include "Quantum.h"
 
 void initrand() {
 	srand(time(NULL));

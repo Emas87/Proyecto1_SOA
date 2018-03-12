@@ -1,6 +1,5 @@
 #include <gtk/gtk.h>
-#include <stdlib.h>
-//#include "Quantum.h"
+#include "lottery.h"
 
 //gcc Threads_Progress.c `pkg-config --cflags --libs gtk+-3.0`
 
