@@ -1,5 +1,4 @@
 #include "soa_thread.h"
-#include <ucontext.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <setjmp.h>
@@ -39,11 +38,8 @@ void arctan (void* arctan_arg) {
 	int iterations=*workload*50;
 	double arctan_result=0.0;
 	int percent_done_local=0;
-	//printf("Workload=%i\n", *workload);
-	//printf("Starting pi value calculation\n");
 	
 	printf("Porcentaje Inicial=%d%%\n",*percent_done);
-	//printf("Item entrada=%d\n",*item);
    if(modo){//expropiativo
       for (n=*item; n<iterations; n++) {
 			if (*percent_done <100){
@@ -56,7 +52,6 @@ void arctan (void* arctan_arg) {
 			}
       }
 		printf("Final Pi result=%.50lf\n",*pi);
-		//	return(pi,percent_done);
 		mctx_switch(mctx_function,mctx_return);
 	}else {//Modo no expropiativo
       for (n=0; n<iterations; n++) {
@@ -65,15 +60,12 @@ void arctan (void* arctan_arg) {
 					*pi+=4.0 * arctan_result;
 					*percent_done += percent_done_local;
 					*item += n;
-			      //printf("Workload percent done=%f\n",*percent_done);
 			      printf("Resultado parcial Pi=%.50lf\n",*pi);
 			      mctx_switch(mctx_function,mctx_return);
 					halt_flag=0;
 				}
 				arctan_result=arctan_result + pow((double)-1.0, (double) (n+*item)) / (2.0*(double)(n+*item)+1.0);
-				//printf("Iteration %i value %f\n",n+*item,4*arctan_result+*pi);
 				percent_done_local = ((double)(n+1)/(double)iterations)*100.0;
-				//printf("Workload percent done=%f\n",*percent_done);
 				if (percent_done_local == *percent_halt) {
 					halt_flag=1;
 				}
@@ -82,7 +74,6 @@ void arctan (void* arctan_arg) {
 		*pi+=4.0 * arctan_result;
 		*percent_done += percent_done_local;
 		printf("Final Pi result=%.50lf\n",*pi);
-		//	return(pi,percent_done);
 		mctx_switch(mctx_function,mctx_return);
    }
 }
