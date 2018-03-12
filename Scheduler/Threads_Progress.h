@@ -26,11 +26,11 @@ static gboolean update_widgets(gpointer data){
       sprintf(c, "PI = %f", Resultado[i]);
       gtk_label_set_text(GTK_LABEL(label[i]),c);
    }
-   //printf("salvando update\n");   
+   printf("salvando update\n");   
    if(!modo){
        mctx_switch(mctx_function,mctx_return);
    }
-   //printf("saliendo del update\n");   
+   printf("saliendo del update\n");   
    return TRUE;
 }
 void clean_malloc(){

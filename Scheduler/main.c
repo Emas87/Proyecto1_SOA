@@ -53,21 +53,24 @@ int main(int argc,char *argv[]){
 	arctan_t arctan_arg[thread_num];
 	grap_t grap_arg;
 	int inicio = 0;
+	int final = 0;
 	//mctx_t mctx_create_thread[thread_num];
 
 	if(modo == 0){
-		while(1){
+		while(!final){
 			printf("-------------------------------------------------------------\n");
 			//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
 			int total_tickets=0;
 			for(i=0;i<thread_num;i++){
 				total_tickets += tickets[i];
+				//printf("Total Tickets: %d\n", total_tickets);
 			}
 				
-			if(total_tickets>0){
+			if(total_tickets>tickets[0]){
 				winner_thread = lottery(thread_num, tickets, thread_id);
 			} else {
 				winner_thread = 0;
+				final = 1;
 			}
 			printf("Winner Thread: %d\n",winner_thread);
 
