@@ -19,7 +19,7 @@ int lottery(int thread_num, int thread_tickets[], int thread_id[]){
 	}
 
 	winner_ticket = 1+rand()%(total_tickets);
-	printf("Winner ticket: %d\n", winner_ticket);
+	//printf("Winner ticket: %d\n", winner_ticket);
 	
 	for(j=0;j<thread_num;j++){
 		acum += thread_tickets[j];

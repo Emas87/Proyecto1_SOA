@@ -28,7 +28,7 @@ int main(int argc,char *argv[]){
    gtk_init(&argc, &argv);   
 	int thread_num = 7;
 	int thread_id[] = {0,14,28,56,112,224,448,'\0'}; 
-	int tickets[] = {40,11,15,9,17,7,19,'\0'};
+	int tickets[] = {0,11,15,9,17,7,19,'\0'};
 	int modo = 0;
 	int quantum = 15;
 	int winner_thread=0;
@@ -58,7 +58,7 @@ int main(int argc,char *argv[]){
 
 	if(modo == 0){
 		while(!final){
-			printf("-------------------------------------------------------------\n");
+			printf("-------------------------------------------\n");
 			//winner_thread = scheduler(mode, thread_num, tickets, quantum, thread_id);
 			int total_tickets=0;
 			for(i=0;i<thread_num;i++){
@@ -72,13 +72,14 @@ int main(int argc,char *argv[]){
 				winner_thread = 0;
 				final = 1;
 			}
-			printf("Winner Thread: %d\n",winner_thread);
+
+			printf("Thread Ejecutando: %d\n",winner_thread);
 
 			for(i=0;i<thread_num;i++){
 				if(thread_id[i]==winner_thread){
 					indice = i;
 					if(indice == 0){
-						printf("Graficos\n");
+						//printf("Graficos\n");
 						grap_t *grap_args = &grap_arg;
 						grap_args -> Porcentaje = percent_done;
 						grap_args -> Resultado = pi;
@@ -90,14 +91,14 @@ int main(int argc,char *argv[]){
 
 						mctx_t *mctx_p = &mctx_create_thread[0];
 						if(!inicio){
-							mctx_create(mctx_p, graphics, (void*)grap_args, (void*)sk_addr[0], sk_size);
+							//mctx_create(mctx_p, graphics, (void*)grap_args, (void*)sk_addr[0], sk_size);
 							inicio = 1;
 						}
-						mctx_switch(&mctx_main, &mctx_create_thread[0]);
+						//mctx_switch(&mctx_main, &mctx_create_thread[0]);
 				                break;						
 
 					} else {
-						printf("Indice: %d\n", indice);
+						//printf("Posicion: %d\n", indice);
 						arctan_t *arctan_args = &arctan_arg[i]; 
 				
 						arctan_args -> workload = &workload[i];
@@ -121,15 +122,15 @@ int main(int argc,char *argv[]){
 				}
 			}
 	
-			printf ("Porcentaje Parcial: %d%% Thread %d\n", percent_done[indice], indice);
+			printf ("Porcentaje Final: %d%% \n", percent_done[indice]);
 			//mctx_switch(&mctx_main, &mctx_create_thread[indice]);
 
 			if(percent_done[indice]==100){
 				tickets[indice]=0;
 			}
-         
 		}
 	} //end if modo
+
 	printf("Fin Programa \n");
 
 }

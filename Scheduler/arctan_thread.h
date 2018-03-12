@@ -39,11 +39,11 @@ void arctan (void* arctan_arg) {
 	double arctan_result=0.0;
 	int percent_done_local=0;
 
-	printf("Input workload=%i\n", *workload);
-	printf("Starting pi value calculation\n");
+	//printf("Workload=%i\n", *workload);
+	//printf("Starting pi value calculation\n");
 	
-	printf("Porcentaje entrada=%d\n",*percent_done);
-	printf("Item entrada=%d\n",*item);
+	printf("Porcentaje Inicial=%d%% \n",*percent_done);
+	//printf("Item entrada=%d\n",*item);
 
 	for (n=0; n<iterations; n++) {
 		if ((percent_done_local+*percent_done) <100){
@@ -51,12 +51,9 @@ void arctan (void* arctan_arg) {
 				*pi+=4.0 * arctan_result;
 				*percent_done += percent_done_local;
 				*item += n;
-		        	printf("Workload percent done=%d\n",*percent_done);
-		        	printf("Partial Pi result=%.10lf\n",*pi);
+		        	//printf("Workload percent done=%d\n",*percent_done);
+		        	printf("Resultado Parcial: PI=%.10lf\n",*pi);
 		        	mctx_switch(mctx_function,mctx_return);
-				printf("DEBUG\n");
-				printf("Porcentaje entrada=%d\n",*percent_done);
-
 				halt_flag=0;
 			}
 			arctan_result=arctan_result + pow((double)-1.0, (double) (n+*item)) / (2.0*(double)(n+*item)+1.0);
@@ -65,15 +62,15 @@ void arctan (void* arctan_arg) {
 			//printf("Workload percent done=%f\n",*percent_done);
 			if (percent_done_local == *percent_halt) {
 				halt_flag=1;
-				printf("Halt flag set\n");
+				//printf("Halt flag set\n");
 			}
 		}
 	}
 
         *pi+=4.0 * arctan_result;
 	*percent_done += percent_done_local;
-	printf("Workload percent done=%d\n",*percent_done);
-        printf("Final Pi result=%.10lf\n",*pi);
+	//printf("Workload percent done=%d\n",*percent_done);
+        printf("Resultado Final: PI=%.10lf\n",*pi);
 //	return(pi,percent_done);
 	mctx_switch(mctx_function,mctx_return);
 
