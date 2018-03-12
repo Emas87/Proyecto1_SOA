@@ -29,25 +29,23 @@ int main(int argc,char *argv[]){
 	int thread_num = 7;
 	int thread_id[] = {0,14,28,56,112,224,448,'\0'}; 
 	int tickets[] = {0,11,15,9,17,7,19,'\0'};
-	int modo = 1;
-	int quantum = 100;
+	int modo = 1; //Expropiativo =1, no-expropiativo =0
+	int quantum = 2; //milisegundos
 	int winner_thread=0;
 	int i=0;
-	int j=0;
-	int k=0;
 	int indice=0;
 
    quantum = quantum*1000;//microsegundos a milisegundo a 
 	size_t sk_size = SIGSTKSZ;
 	char sk_addr[thread_num][SIGSTKSZ];
 	mctx_t mctx_create_thread[thread_num], mctx_main;
-	mctx_t *sf_arg = &mctx_main;
 
 	int workload[]={0,8,16,32,64,128,256,'\0'};
 	int percent_halt[]={0,15,20,25,30,35,40,'\0'};
+
 	int percent_done[]={0,0,0,0,0,0,0,'\0'};
 	double pi[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0,'\0'};
-	int item[]={0.0,0.0,0.0,0.0,0.0,0.0,0.0,'\0'};
+	int item[]={0,0,0,0,0,0,0,'\0'};
 
 	initrand();
 
@@ -90,7 +88,6 @@ int main(int argc,char *argv[]){
 						grap_args -> quantum = 100000;
 						grap_args -> modo = modo;
 
-						mctx_t *mctx_p = &mctx_create_thread[0];
 						if(!inicio){
 							//mctx_create(mctx_p, graphics, (void*)grap_args, (void*)sk_addr[0], sk_size);
 							inicio = 1;
@@ -128,7 +125,7 @@ int main(int argc,char *argv[]){
 			printf ("Porcentaje Final: %d%% \n", percent_done[indice]);
 			//mctx_switch(&mctx_main, &mctx_create_thread[indice]);
 
-			if(percent_done[indice]==100){
+			if(percent_done[indice]>=100){
 				tickets[indice]=0;
 			}
 		}
@@ -173,7 +170,6 @@ int main(int argc,char *argv[]){
 						grap_args -> quantum = quantum;
 						grap_args -> modo = modo;
 
-						mctx_t *mctx_p = &mctx_create_thread[0];
 						if(!inicio){
 							//mctx_create(mctx_p, graphics, (void*)grap_args, (void*)sk_addr[0], sk_size);
 							inicio = 1;
@@ -213,7 +209,7 @@ int main(int argc,char *argv[]){
 			printf ("Porcentaje Final: %d%% \n", percent_done[indice]);
 			//mctx_switch(&mctx_main, &mctx_create_thread[indice]);
 
-			if(percent_done[indice]==100){
+			if(percent_done[indice]>=100){
 				tickets[indice]=0;
 			}
 		}

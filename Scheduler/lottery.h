@@ -30,5 +30,6 @@ int lottery(int thread_num, int thread_tickets[], int thread_id[]){
 			return winner_thread;
 		}
 	}
+   return 0;
 
 }
